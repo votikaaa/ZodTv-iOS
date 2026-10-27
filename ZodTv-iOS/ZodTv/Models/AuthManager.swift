@@ -106,4 +106,14 @@ class AuthManager {
             prefs.setValue(encoded, forKey: historyKey)
         }
     }
+    
+    func clearHistory() {
+        prefs.removeObject(forKey: historyKey)
+    }
+    
+    func saveLogin(token: String, username: String) {
+        prefs.setValue(token, forKey: tokenKey)
+        prefs.setValue(username, forKey: usernameKey)
+        prefs.setValue(false, forKey: isGuestKey)
+    }
 }

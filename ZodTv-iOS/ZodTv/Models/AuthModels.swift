@@ -15,16 +15,30 @@ struct DeviceStatusResponse: Codable {
 struct LoginRequest: Codable {
     let username: String
     let password: String
-    let deviceId: String
+    let deviceId: String?
+
+    init(username: String, password: String, deviceId: String? = nil) {
+        self.username = username
+        self.password = password
+        self.deviceId = deviceId
+    }
 }
 
 struct RegisterRequest: Codable {
     let username: String
     let password: String
-    let deviceId: String
+    let deviceId: String?
+
+    init(username: String, password: String, deviceId: String? = nil) {
+        self.username = username
+        self.password = password
+        self.deviceId = deviceId
+    }
 }
 
 struct AuthResponse: Codable {
+    let status: String?
+    let message: String?
     let token: String?
     let username: String?
     let error: String?
