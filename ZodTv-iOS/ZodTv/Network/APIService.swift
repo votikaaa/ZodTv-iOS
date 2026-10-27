@@ -151,11 +151,79 @@ class APIService {
         return try await client.fetch(endpoint: "matchapi.php?action=matches", isMusic: true, queryItems: query)
     }
     
-    // MARK: - TV Channels (JSON parsing)
+    // MARK: - TV Categories & Matching (Exact Android Parity)
+    static let tvCategories = [
+        "الكل",
+        "beIN SPORTS",
+        "قنوات رياضية",
+        "ALKASS",
+        "beIN ترفيهية",
+        "سيرفر الأسطورة",
+        "أخبار",
+        "قنوات مصرية",
+        "قنوات عربية",
+        "دينية وإسلامية",
+        "أطفال",
+        "أفلام ومسلسلات",
+        "وثائقية",
+        "قنوات خليجية",
+        "المغرب العربي",
+        "الشام والعراق",
+        "موسيقى وأغاني",
+        "عالمية وترفيه",
+        "بدون فئة"
+    ]
+
+    static func matchesCategory(itemCategory: String, targetCategory: String) -> Bool {
+        if targetCategory == "الكل" { return true }
+        if itemCategory.caseInsensitiveCompare(targetCategory) == .orderedSame { return true }
+        let item = itemCategory.lowercased()
+        switch targetCategory {
+        case "beIN SPORTS":
+            return item.contains("bein sports") || item.contains("بين سبورت") || item.contains("bein sport")
+        case "قنوات رياضية":
+            return item.contains("رياضية") || item.contains("sports") || item.contains("sport") || item.contains("alkass") || item.contains("الكأس") || item.contains("ssc") || item.contains("on time")
+        case "ALKASS", "الكأس":
+            return item.contains("alkass") || item.contains("الكأس")
+        case "beIN ترفيهية":
+            return item.contains("bein entertainment") || item.contains("بين ترفيهية")
+        case "سيرفر الأسطورة":
+            return item.contains("الأسطورة") || item.contains("ostora")
+        case "أخبار":
+            return item.contains("أخبار") || item.contains("news") || item.contains("الجزيرة") || item.contains("العربية") || item.contains("حدث")
+        case "قنوات مصرية":
+            return item.contains("مصرية") || item.contains("egypt") || item.contains("egypte") || item.contains("dmc") || item.contains("on e") || item.contains("cbc")
+        case "قنوات عربية":
+            return item.contains("عربية") || item.contains("arabic") || item.contains("mbc") || item.contains("rotana")
+        case "دينية وإسلامية":
+            return item.contains("دينية") || item.contains("إسلامية") || item.contains("قرآن") || item.contains("religious") || item.contains("quran") || item.contains("مكة") || item.contains("المدينة")
+        case "أطفال":
+            return item.contains("أطفال") || item.contains("kids") || item.contains("animation") || item.contains("كرتون") || item.contains("spacetoon") || item.contains("سبيستون") || item.contains("cn")
+        case "أفلام ومسلسلات":
+            return item.contains("أفلام") || item.contains("مسلسلات") || item.contains("movies") || item.contains("series") || item.contains("cinema") || item.contains("سينما")
+        case "وثائقية":
+            return item.contains("وثائقية") || item.contains("documentary") || item.contains("nat geo") || item.contains("ناشيونال")
+        case "قنوات خليجية":
+            return item.contains("خليجية") || item.contains("gulf") || item.contains("saudi") || item.contains("uea") || item.contains("kwt") || item.contains("دبي")
+        case "المغرب العربي":
+            return item.contains("المغرب") || item.contains("algeria") || item.contains("tunisia") || item.contains("morocco") || item.contains("الجزائر") || item.contains("تونس")
+        case "الشام والعراق":
+            return item.contains("الشام") || item.contains("العراق") || item.contains("syria") || item.contains("lebanon") || item.contains("iraq") || item.contains("سوريا") || item.contains("لبنان")
+        case "موسيقى وأغاني":
+            return item.contains("موسيقية") || item.contains("music") || item.contains("أغاني") || item.contains("غنائية")
+        case "عالمية وترفيه":
+            return item.contains("عالمية") || item.contains("ترفيهية") || item.contains("entertainment") || item.contains("france") || item.contains("turkish") || item.contains("osn")
+        case "بدون فئة":
+            return true
+        default:
+            return item.contains(targetCategory.lowercased())
+        }
+    }
+
+    // MARK: - TV Channels (Full JSON Parsing)
     func getTvChannels() async throws -> [ChannelCategory] {
         let rawJs = try await client.fetchRawString(endpoint: "tv.js?t=\(Int(Date().timeIntervalSince1970 * 1000))")
         
-        // Remove javascript variable wrapping if present: window.tvData = {...} or var channels = [...]
         var cleanJson = rawJs.trimmingCharacters(in: .whitespacesAndNewlines)
         if cleanJson.hasPrefix("window.tvData = ") {
             cleanJson = String(cleanJson.dropFirst("window.tvData = ".count))
@@ -166,31 +234,109 @@ class APIService {
             cleanJson = String(cleanJson.dropLast())
         }
         
+        if let start = cleanJson.firstIndex(of: "["), let end = cleanJson.lastIndex(of: "]") {
+            cleanJson = String(cleanJson[start...end])
+        }
+        
         guard let data = cleanJson.data(using: .utf8) else { return [] }
         
-        // Parse channels JSON structure
-        var categoriesList: [ChannelCategory] = []
-        if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-            for (categoryName, channelsRaw) in jsonObject {
-                if let channelArray = channelsRaw as? [[String: Any]] {
-                    var items: [ChannelItem] = []
-                    for c in channelArray {
-                        let name = c["name"] as? String ?? ""
-                        let url = c["url"] as? String ?? ""
-                        let logo = c["logo"] as? String
-                        let userAgent = c["userAgent"] as? String
-                        let referer = c["referer"] as? String
-                        if !name.isEmpty && !url.isEmpty {
-                            items.append(ChannelItem(name: name, url: url, logo: logo, category: categoryName, userAgent: userAgent, referer: referer, headers: nil))
+        var allChannels: [ChannelItem] = []
+        
+        if let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] {
+            for c in jsonArray {
+                let name = c["name"] as? String ?? ""
+                let url = c["url"] as? String ?? ""
+                let logo = c["logo"] as? String ?? c["imageUrl"] as? String
+                let cat = c["category"] as? String ?? "عامة"
+                let userAgent = c["userAgent"] as? String
+                let referer = c["referer"] as? String
+                if !name.isEmpty && !url.isEmpty {
+                    allChannels.append(ChannelItem(
+                        name: name,
+                        url: url,
+                        logo: logo,
+                        category: cat,
+                        userAgent: userAgent,
+                        referer: referer,
+                        headers: nil
+                    ))
+                }
+            }
+        } else if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let sources = jsonObject["sources"] as? [[String: Any]] {
+                for src in sources {
+                    if let cats = src["categories"] as? [[String: Any]] {
+                        for cat in cats {
+                            let catName = cat["category_name"] as? String ?? "عامة"
+                            if let chs = cat["channels"] as? [[String: Any]] {
+                                for ch in chs {
+                                    let chName = ch["channel_name"] as? String ?? ""
+                                    let chLogo = ch["logo"] as? String
+                                    if let srvs = ch["servers"] as? [[String: Any]] {
+                                        for srv in srvs {
+                                            let dUrl = srv["direct_url"] as? String ?? ""
+                                            if !dUrl.isEmpty {
+                                                allChannels.append(ChannelItem(
+                                                    name: chName,
+                                                    url: dUrl,
+                                                    logo: chLogo,
+                                                    category: catName,
+                                                    userAgent: srv["user_agent"] as? String,
+                                                    referer: srv["referer"] as? String,
+                                                    headers: nil
+                                                ))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    }
-                    if !items.isEmpty {
-                        categoriesList.append(ChannelCategory(id: categoryName, name: categoryName, channels: items))
                     }
                 }
             }
         }
+        
+        // Group allChannels into the 19 standard Android categories
+        var categoriesList: [ChannelCategory] = []
+        for targetCat in Self.tvCategories {
+            if targetCat == "الكل" {
+                categoriesList.append(ChannelCategory(id: "all", name: "الكل", channels: Array(allChannels.prefix(400))))
+            } else {
+                let matched = allChannels.filter { Self.matchesCategory(itemCategory: $0.category ?? "", targetCategory: targetCat) }
+                if !matched.isEmpty {
+                    categoriesList.append(ChannelCategory(id: targetCat, name: targetCat, channels: matched))
+                }
+            }
+        }
+        
         return categoriesList
+    }
+
+    // MARK: - Radio Stations
+    func getRadioStations() async throws -> [ChannelItem] {
+        let rawJs = try await client.fetchRawString(endpoint: "radio.js?t=\(Int(Date().timeIntervalSince1970 * 1000))")
+        var cleanJson = rawJs.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let start = cleanJson.firstIndex(of: "["), let end = cleanJson.lastIndex(of: "]") {
+            cleanJson = String(cleanJson[start...end])
+        }
+        guard let data = cleanJson.data(using: .utf8),
+              let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return []
+        }
+        
+        var stations: [ChannelItem] = []
+        for r in jsonArray {
+            let name = r["name"] as? String ?? ""
+            let url = r["url"] as? String ?? ""
+            let logo = r["imageUrl"] as? String ?? r["logo"] as? String
+            let cat = r["category"] as? String ?? "إذاعة"
+            let ua = r["userAgent"] as? String
+            let ref = r["referer"] as? String
+            if !name.isEmpty && !url.isEmpty {
+                stations.append(ChannelItem(name: name, url: url, logo: logo, category: cat, userAgent: ua, referer: ref, headers: nil))
+            }
+        }
+        return stations
     }
     
     // MARK: - Auth

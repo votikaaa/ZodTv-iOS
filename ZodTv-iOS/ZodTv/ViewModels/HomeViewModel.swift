@@ -30,9 +30,11 @@ class HomeViewModel: ObservableObject {
     @Published var moviesItems: [MediaItem] = []
     @Published var seriesItems: [MediaItem] = []
     
-    // Live TV & Matches
+    // Live TV, Radio & Matches
     @Published var channelCategories: [ChannelCategory] = []
     @Published var isLiveLoading: Bool = false
+    @Published var radioStations: [ChannelItem] = []
+    @Published var isRadioLoading: Bool = false
     @Published var todayMatches: [MatchData] = []
     @Published var isMatchesLoading: Bool = false
     
@@ -55,6 +57,7 @@ class HomeViewModel: ObservableObject {
         await loadHomeFeed()
         await loadChannels()
         await loadMatches()
+        await loadRadioStations()
     }
     
     func loadConfig() async {
@@ -105,6 +108,16 @@ class HomeViewModel: ObservableObject {
             print("loadChannels error: \(error)")
         }
         isLiveLoading = false
+    }
+    
+    func loadRadioStations() async {
+        isRadioLoading = true
+        do {
+            self.radioStations = try await APIService.shared.getRadioStations()
+        } catch {
+            print("loadRadioStations error: \(error)")
+        }
+        isRadioLoading = false
     }
     
     func loadMatches() async {
