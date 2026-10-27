@@ -13,6 +13,7 @@ class APIService {
     private let client = APIClient.shared
     
     // MARK: - Check Device
+    @MainActor
     func checkDevice(deviceId: String) async -> DeviceStatusResponse? {
         let deviceName = "\(UIDevice.current.model) - iOS \(UIDevice.current.systemVersion)"
         let queryItems = [
