@@ -1,0 +1,405 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10010001 /* ZodTvApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010001 /* ZodTvApp.swift */; };
+		10010002 /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010002 /* ColorTheme.swift */; };
+		10010003 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010003 /* Fonts.swift */; };
+		10010004 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010004 /* Models.swift */; };
+		10010005 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010005 /* AppConfig.swift */; };
+		10010006 /* MatchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010006 /* MatchModels.swift */; };
+		10010007 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010007 /* AuthModels.swift */; };
+		10010008 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010008 /* AuthManager.swift */; };
+		10010009 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010009 /* APIClient.swift */; };
+		10010010 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010010 /* APIService.swift */; };
+		10010011 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010011 /* HomeViewModel.swift */; };
+		10010012 /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010012 /* DetailsViewModel.swift */; };
+		10010013 /* NetflixBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010013 /* NetflixBottomBar.swift */; };
+		10010014 /* MediaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010014 /* MediaCard.swift */; };
+		10010015 /* ChannelCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010015 /* ChannelCard.swift */; };
+		10010016 /* MatchCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010016 /* MatchCard.swift */; };
+		10010017 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010017 /* SplashScreen.swift */; };
+		10010018 /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010018 /* HomeScreen.swift */; };
+		10010019 /* DetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010019 /* DetailsScreen.swift */; };
+		10010020 /* WatchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010020 /* WatchScreen.swift */; };
+		10010021 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20010021 /* MainView.swift */; };
+		10010022 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 20010022 /* Fonts */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		20010000 /* ZodTv.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZodTv.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		20010001 /* ZodTvApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZodTvApp.swift; sourceTree = "<group>"; };
+		20010002 /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
+		20010003 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
+		20010004 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		20010005 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		20010006 /* MatchModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchModels.swift; sourceTree = "<group>"; };
+		20010007 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		20010008 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		20010009 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		20010010 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		20010011 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		20010012 /* DetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewModel.swift; sourceTree = "<group>"; };
+		20010013 /* NetflixBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetflixBottomBar.swift; sourceTree = "<group>"; };
+		20010014 /* MediaCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCard.swift; sourceTree = "<group>"; };
+		20010015 /* ChannelCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCard.swift; sourceTree = "<group>"; };
+		20010016 /* MatchCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchCard.swift; sourceTree = "<group>"; };
+		20010017 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		20010018 /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
+		20010019 /* DetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsScreen.swift; sourceTree = "<group>"; };
+		20010020 /* WatchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchScreen.swift; sourceTree = "<group>"; };
+		20010021 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		20010022 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
+		20010023 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		30010001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		40010001 = {
+			isa = PBXGroup;
+			children = (
+				40010002 /* ZodTv */,
+				40010003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		40010002 /* ZodTv */ = {
+			isa = PBXGroup;
+			children = (
+				20010001 /* ZodTvApp.swift */,
+				20010023 /* Info.plist */,
+				40010004 /* Theme */,
+				40010005 /* Models */,
+				40010006 /* Network */,
+				40010007 /* ViewModels */,
+				40010008 /* Views */,
+				40010012 /* Resources */,
+			);
+			path = ZodTv;
+			sourceTree = "<group>";
+		};
+		40010003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				20010000 /* ZodTv.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		40010004 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				20010002 /* ColorTheme.swift */,
+				20010003 /* Fonts.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		40010005 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				20010004 /* Models.swift */,
+				20010005 /* AppConfig.swift */,
+				20010006 /* MatchModels.swift */,
+				20010007 /* AuthModels.swift */,
+				20010008 /* AuthManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		40010006 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				20010009 /* APIClient.swift */,
+				20010010 /* APIService.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		40010007 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				20010011 /* HomeViewModel.swift */,
+				20010012 /* DetailsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		40010008 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				20010021 /* MainView.swift */,
+				40010009 /* Navigation */,
+				40010010 /* Components */,
+				40010011 /* Screens */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		40010009 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				20010013 /* NetflixBottomBar.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		40010010 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				20010014 /* MediaCard.swift */,
+				20010015 /* ChannelCard.swift */,
+				20010016 /* MatchCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		40010011 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				20010017 /* SplashScreen.swift */,
+				20010018 /* HomeScreen.swift */,
+				20010019 /* DetailsScreen.swift */,
+				20010020 /* WatchScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		40010012 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				20010022 /* Fonts */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		50010001 /* ZodTv */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 60010001 /* Build configuration list for PBXNativeTarget "ZodTv" */;
+			buildPhases = (
+				70010001 /* Sources */,
+				30010001 /* Frameworks */,
+				80010001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ZodTv;
+			productName = ZodTv;
+			productReference = 20010000 /* ZodTv.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90010001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					50010001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 60010002 /* Build configuration list for PBXProject "ZodTv" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ar;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				ar,
+				Base,
+			);
+			mainGroup = 40010001;
+			productRefGroup = 40010003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50010001 /* ZodTv */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		80010001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10010022 /* Fonts in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		70010001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10010001 /* ZodTvApp.swift in Sources */,
+				10010002 /* ColorTheme.swift in Sources */,
+				10010003 /* Fonts.swift in Sources */,
+				10010004 /* Models.swift in Sources */,
+				10010005 /* AppConfig.swift in Sources */,
+				10010006 /* MatchModels.swift in Sources */,
+				10010007 /* AuthModels.swift in Sources */,
+				10010008 /* AuthManager.swift in Sources */,
+				10010009 /* APIClient.swift in Sources */,
+				10010010 /* APIService.swift in Sources */,
+				10010011 /* HomeViewModel.swift in Sources */,
+				10010012 /* DetailsViewModel.swift in Sources */,
+				10010013 /* NetflixBottomBar.swift in Sources */,
+				10010014 /* MediaCard.swift in Sources */,
+				10010015 /* ChannelCard.swift in Sources */,
+				10010016 /* MatchCard.swift in Sources */,
+				10010017 /* SplashScreen.swift in Sources */,
+				10010018 /* HomeScreen.swift in Sources */,
+				10010019 /* DetailsScreen.swift in Sources */,
+				10010020 /* WatchScreen.swift in Sources */,
+				10010021 /* MainView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		60010003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		60010004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		60010005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ZodTv/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zodtv.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		60010006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ZodTv/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zodtv.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		60010001 /* Build configuration list for PBXNativeTarget "ZodTv" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60010005 /* Debug */,
+				60010006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		60010002 /* Build configuration list for PBXProject "ZodTv" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				60010003 /* Debug */,
+				60010004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 90010001 /* Project object */;
+}
