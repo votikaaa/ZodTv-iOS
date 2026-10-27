@@ -21,10 +21,38 @@ struct MediaData: Codable {
     let count: Int?
 }
 
+// MARK: - Home Feed Response
+struct HomeFeedResponse: Codable {
+    let success: Bool?
+    let data: HomeFeedData?
+    let error: String?
+}
+
+struct HomeFeedData: Codable {
+    let slider: [MediaItem]?
+    let latest: [MediaItem]?
+    let turkishSeries: [MediaItem]?
+    let arabicSeries: [MediaItem]?
+    let foreignMovies: [MediaItem]?
+    let arabicMovies: [MediaItem]?
+    let animationMovies: [MediaItem]?
+    let ramadan2026: [MediaItem]?
+
+    enum CodingKeys: String, CodingKey {
+        case slider, latest
+        case turkishSeries = "turkish_series"
+        case arabicSeries = "arabic_series"
+        case foreignMovies = "foreign_movies"
+        case arabicMovies = "arabic_movies"
+        case animationMovies = "animation_movies"
+        case ramadan2026 = "ramadan_2026"
+    }
+}
+
 // MARK: - Media Item
 struct MediaItem: Codable, Identifiable, Hashable {
     var id: String {
-        return url ?? title + (year ?? "")
+        return url ?? itemId ?? title + (year ?? "")
     }
     
     let title: String
@@ -37,7 +65,7 @@ struct MediaItem: Codable, Identifiable, Hashable {
     let quality: String?
     let year: String?
     let tags: [String]?
-    let type: String? // "movie", "series", "anime", etc.
+    let type: String?
     let episodeCount: String?
     let parentUrl: String?
     var lastPosition: Int64?
@@ -51,6 +79,7 @@ struct MediaItem: Codable, Identifiable, Hashable {
         case itemId = "id"
         case image
         case imageFull = "image_full"
+        case imageFullAlt = "imageFull"
         case backdropUrl
         case episodeCount
         case parentUrl
@@ -59,6 +88,55 @@ struct MediaItem: Codable, Identifiable, Hashable {
         case parentTitle
         case seasonNumber
         case episodeNumber
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.title = (try? container.decode(String.self, forKey: .title)) ?? ""
+        self.url = try? container.decode(String.self, forKey: .url)
+        
+        // Flexible ID (Int or String)
+        if let idStr = try? container.decode(String.self, forKey: .itemId) {
+            self.itemId = idStr
+        } else if let idInt = try? container.decode(Int.self, forKey: .itemId) {
+            self.itemId = "\(idInt)"
+        } else {
+            self.itemId = nil
+        }
+        
+        self.image = try? container.decode(String.self, forKey: .image)
+        self.imageFull = (try? container.decode(String.self, forKey: .imageFull)) ?? (try? container.decode(String.self, forKey: .imageFullAlt))
+        self.backdropUrl = try? container.decode(String.self, forKey: .backdropUrl)
+        
+        // Flexible Rating (String, Double, Int)
+        if let rStr = try? container.decode(String.self, forKey: .rating) {
+            self.rating = rStr
+        } else if let rDbl = try? container.decode(Double.self, forKey: .rating) {
+            self.rating = String(format: "%.1f", rDbl)
+        } else {
+            self.rating = nil
+        }
+        
+        self.quality = try? container.decode(String.self, forKey: .quality)
+        
+        // Flexible Year (String, Int)
+        if let yStr = try? container.decode(String.self, forKey: .year) {
+            self.year = yStr
+        } else if let yInt = try? container.decode(Int.self, forKey: .year) {
+            self.year = "\(yInt)"
+        } else {
+            self.year = nil
+        }
+        
+        self.tags = try? container.decode([String].self, forKey: .tags)
+        self.type = try? container.decode(String.self, forKey: .type)
+        self.episodeCount = try? container.decode(String.self, forKey: .episodeCount)
+        self.parentUrl = try? container.decode(String.self, forKey: .parentUrl)
+        self.lastPosition = try? container.decode(Int64.self, forKey: .lastPosition)
+        self.totalDuration = try? container.decode(Int64.self, forKey: .totalDuration)
+        self.parentTitle = try? container.decode(String.self, forKey: .parentTitle)
+        self.seasonNumber = try? container.decode(Int.self, forKey: .seasonNumber)
+        self.episodeNumber = try? container.decode(Int.self, forKey: .episodeNumber)
     }
 
     var displayImage: String {

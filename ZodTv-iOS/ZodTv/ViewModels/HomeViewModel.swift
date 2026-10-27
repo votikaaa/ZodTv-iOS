@@ -12,19 +12,23 @@ import SwiftUI
 class HomeViewModel: ObservableObject {
     @Published var appConfig = AppConfig()
     
-    // Featured & Carousels
-    @Published var featuredMovies: [MediaItem] = []
-    @Published var featuredSeries: [MediaItem] = []
-    @Published var featuredAnime: [MediaItem] = []
+    // Featured Hero Slider
+    @Published var sliderItems: [MediaItem] = []
     @Published var isFeaturedLoading: Bool = true
     
-    // Rows
+    // Curated Home Sections (Identical to Android)
+    @Published var foreignMovies: [MediaItem] = []
+    @Published var arabicMovies: [MediaItem] = []
+    @Published var foreignSeries: [MediaItem] = []
+    @Published var arabicSeries: [MediaItem] = []
+    @Published var turkishSeries: [MediaItem] = []
+    @Published var animationMovies: [MediaItem] = []
+    @Published var ramadanSeries: [MediaItem] = []
+    @Published var latestItems: [MediaItem] = []
+    
+    // Full categories for Explore Tab
     @Published var moviesItems: [MediaItem] = []
     @Published var seriesItems: [MediaItem] = []
-    @Published var animeItems: [MediaItem] = []
-    @Published var recommendedMovies: [MediaItem] = []
-    @Published var recommendedSeries: [MediaItem] = []
-    @Published var turkishItems: [MediaItem] = []
     
     // Live TV & Matches
     @Published var channelCategories: [ChannelCategory] = []
@@ -48,7 +52,7 @@ class HomeViewModel: ObservableObject {
     
     func refreshAll() async {
         await loadConfig()
-        await loadFeaturedAndRows()
+        await loadHomeFeed()
         await loadChannels()
         await loadMatches()
     }
@@ -57,29 +61,37 @@ class HomeViewModel: ObservableObject {
         self.appConfig = await APIService.shared.getAppConfig()
     }
     
-    func loadFeaturedAndRows() async {
+    func loadHomeFeed() async {
         isFeaturedLoading = true
         
-        async let moviesTask = try? APIService.shared.getMovies(page: 1)
-        async let seriesTask = try? APIService.shared.getSeries(page: 1)
-        async let turkishTask = try? APIService.shared.getTurkishContent(page: 1)
-        
-        let (moviesRes, seriesRes, turkishRes) = await (moviesTask, seriesTask, turkishTask)
-        
-        if let movies = moviesRes?.data?.items {
-            self.moviesItems = movies
-            self.featuredMovies = Array(movies.prefix(6))
-            self.recommendedMovies = Array(movies.suffix(from: min(6, movies.count)))
+        do {
+            let homeRes = try await APIService.shared.getHomeFeed()
+            if let data = homeRes.data {
+                self.sliderItems = data.slider ?? []
+                self.latestItems = data.latest ?? []
+                self.foreignMovies = data.foreignMovies ?? []
+                self.arabicMovies = data.arabicMovies ?? []
+                self.foreignSeries = data.foreignSeries ?? []
+                self.arabicSeries = data.arabicSeries ?? []
+                self.turkishSeries = data.turkishSeries ?? []
+                self.animationMovies = data.animationMovies ?? []
+                self.ramadanSeries = data.ramadan2026 ?? []
+                
+                // For explore tab fallback
+                self.moviesItems = (data.foreignMovies ?? []) + (data.arabicMovies ?? [])
+                self.seriesItems = (data.foreignSeries ?? []) + (data.arabicSeries ?? [])
+            }
+        } catch {
+            print("loadHomeFeed error: \(error)")
         }
         
-        if let series = seriesRes?.data?.items {
-            self.seriesItems = series
-            self.featuredSeries = Array(series.prefix(6))
-            self.recommendedSeries = Array(series.suffix(from: min(6, series.count)))
-        }
-        
-        if let turkish = turkishRes?.data?.items {
-            self.turkishItems = turkish
+        // If slider is empty, fallback to fetching movies directly
+        if self.sliderItems.isEmpty {
+            if let moviesRes = try? await APIService.shared.getMovies(page: 1), let items = moviesRes.data?.items {
+                self.moviesItems = items
+                self.sliderItems = Array(items.prefix(5))
+                self.foreignMovies = items
+            }
         }
         
         isFeaturedLoading = false

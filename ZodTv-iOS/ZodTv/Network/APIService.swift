@@ -44,6 +44,11 @@ class APIService {
         }
     }
     
+    // MARK: - Home Feed
+    func getHomeFeed() async throws -> HomeFeedResponse {
+        return try await client.fetch(endpoint: "apiv2.php?action=home")
+    }
+    
     // MARK: - Movies
     func getMovies(page: Int = 1, category: String = "", section: String = "", year: String = "", rating: String = "", provider: String? = nil) async throws -> MediaResponse {
         var query = [

@@ -2,7 +2,7 @@
 //  HomeScreen.swift
 //  ZodTv
 //
-//  Exact 1:1 replica of Android HomeScreen.kt with all tabs & features
+//  Exact 1:1 replica of Android HomeScreen.kt with all tabs & curated sections
 //
 
 import SwiftUI
@@ -19,7 +19,11 @@ struct HomeScreen: View {
     var onOpenSettings: () -> Void
     
     // Explore tab sub-category
-    @State private var exploreCategory: String = "movies"
+    @State private var selectedExploreGenre: String = "الكل"
+    
+    private let genres = [
+        "الكل", "اكشن", "مغامرة", "رعب", "كوميدي", "دراما", "خيال علمي", "جريمة", "اثارة", "غموض", "رومانسي"
+    ]
     
     var body: some View {
         ZStack {
@@ -48,17 +52,17 @@ struct HomeScreen: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 
-                // Exact Bottom Bar
+                // Bottom Bar
                 NetflixBottomBar(selectedTab: $selectedTab)
             }
         }
     }
     
-    // MARK: - Top Header
+    // MARK: - Top Header (Fixed LTR order for Logo)
     private var topHeaderView: some View {
         HStack {
-            // Brand Logo
-            HStack(spacing: 4) {
+            // Brand Logo: Enforced Left-To-Right so ZOD is always before TV!
+            HStack(spacing: 5) {
                 Text("ZOD")
                     .font(AppFont.cairo(size: 22, weight: .black))
                     .foregroundColor(Color(hex: 0xE50914))
@@ -66,6 +70,7 @@ struct HomeScreen: View {
                     .font(AppFont.cairo(size: 22, weight: .bold))
                     .foregroundColor(.white)
             }
+            .environment(\.layoutDirection, .leftToRight)
             
             Spacer()
             
@@ -74,7 +79,7 @@ struct HomeScreen: View {
                 selectedTab = .explore
             }) {
                 Image(systemName: "magnifyingglass")
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(AppColors.bronzeGold)
                     .padding(8)
                     .background(AppColors.cinemaSurfaceElevated)
@@ -86,16 +91,16 @@ struct HomeScreen: View {
         .background(Color.black.opacity(0.95))
     }
     
-    // MARK: - 1. Home Tab View
+    // MARK: - 1. Home Tab View (Curated Overview)
     private var homeTabView: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(alignment: .leading, spacing: 22) {
-                // Hero Banner
-                if let featured = homeViewModel.featuredMovies.first {
+                // Hero Banner Slider
+                if let featured = homeViewModel.sliderItems.first {
                     heroBanner(item: featured)
                 }
                 
-                // Today's Matches (if available)
+                // Today's Matches
                 if !homeViewModel.todayMatches.isEmpty {
                     sectionHeader(title: "مباريات اليوم", count: "\(homeViewModel.todayMatches.count)")
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -104,7 +109,7 @@ struct HomeScreen: View {
                                 MatchCard(match: match) {
                                     onSelectMatch(match)
                                 }
-                                .frame(width: 280)
+                                .frame(width: 275)
                             }
                         }
                         .padding(.horizontal, 16)
@@ -117,7 +122,7 @@ struct HomeScreen: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 12) {
                             ForEach(homeViewModel.continueWatching) { item in
-                                MediaCard(item: item, width: 140, height: 210) {
+                                MediaCard(item: item, width: 130, height: 195) {
                                     onSelectMedia(item)
                                 }
                             }
@@ -126,45 +131,58 @@ struct HomeScreen: View {
                     }
                 }
                 
-                // Latest Movies
-                if !homeViewModel.moviesItems.isEmpty {
-                    sectionHeader(title: "أحدث الأفلام", subtitle: "مشاهدة الكل >")
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 12) {
-                            ForEach(homeViewModel.moviesItems) { item in
-                                MediaCard(item: item) {
-                                    onSelectMedia(item)
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                    }
+                // Foreign Movies (أفلام أجنبية حديثة)
+                if !homeViewModel.foreignMovies.isEmpty {
+                    sectionHeader(title: "أفلام أجنبية حديثة", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.foreignMovies)
                 }
                 
-                // Trending Series
-                if !homeViewModel.seriesItems.isEmpty {
-                    sectionHeader(title: "مسلسلات شائعة", subtitle: "مشاهدة الكل >")
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 12) {
-                            ForEach(homeViewModel.seriesItems) { item in
-                                MediaCard(item: item) {
-                                    onSelectMedia(item)
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                    }
+                // Foreign Series (مسلسلات أجنبية حديثة)
+                if !homeViewModel.foreignSeries.isEmpty {
+                    sectionHeader(title: "مسلسلات أجنبية حديثة", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.foreignSeries)
                 }
                 
-                // Turkish Series
-                if !homeViewModel.turkishItems.isEmpty {
-                    sectionHeader(title: "مسلسلات تركية")
+                // Turkish Series (الدراما التركية)
+                if !homeViewModel.turkishSeries.isEmpty {
+                    sectionHeader(title: "الدراما التركية", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.turkishSeries)
+                }
+                
+                // Arabic Movies (أفلام عربية حديثة)
+                if !homeViewModel.arabicMovies.isEmpty {
+                    sectionHeader(title: "أفلام عربية حديثة", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.arabicMovies)
+                }
+                
+                // Arabic Series (مسلسلات عربية حديثة)
+                if !homeViewModel.arabicSeries.isEmpty {
+                    sectionHeader(title: "مسلسلات عربية حديثة", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.arabicSeries)
+                }
+                
+                // Animation & Cartoon (أفلام أنيميشن وكرتون)
+                if !homeViewModel.animationMovies.isEmpty {
+                    sectionHeader(title: "أفلام أنيميشن وكرتون", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.animationMovies)
+                }
+                
+                // Ramadan 2026 (مسلسلات رمضان 2026)
+                if !homeViewModel.ramadanSeries.isEmpty {
+                    sectionHeader(title: "مسلسلات رمضان 2026", subtitle: "عرض الكل >")
+                    horizontalRow(items: homeViewModel.ramadanSeries)
+                }
+                
+                // Featured Live Channels
+                if let firstCat = homeViewModel.channelCategories.first {
+                    sectionHeader(title: firstCat.name, count: "\(firstCat.channels.count)")
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 12) {
-                            ForEach(homeViewModel.turkishItems) { item in
-                                MediaCard(item: item) {
-                                    onSelectMedia(item)
+                            ForEach(firstCat.channels) { channel in
+                                ChannelCard(channel: channel) {
+                                    onSelectChannel(channel)
                                 }
+                                .frame(width: 105)
                             }
                         }
                         .padding(.horizontal, 16)
@@ -176,10 +194,24 @@ struct HomeScreen: View {
         }
     }
     
-    // MARK: - Hero Banner
+    private func horizontalRow(items: [MediaItem]) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 12) {
+                ForEach(items) { item in
+                    MediaCard(item: item, width: 125, height: 185) {
+                        onSelectMedia(item)
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+    }
+    
+    // MARK: - Hero Banner (Cinema Billboard)
     private func heroBanner(item: MediaItem) -> some View {
         ZStack(alignment: .bottomLeading) {
-            if let imgUrl = item.backdropUrl ?? item.imageFull ?? item.image, let url = URL(string: imgUrl) {
+            let img = item.imageFull ?? item.image ?? item.backdropUrl
+            if let imgUrl = img, let url = URL(string: imgUrl) {
                 AsyncImage(url: url) { phase in
                     if let image = phase.image {
                         image
@@ -189,18 +221,18 @@ struct HomeScreen: View {
                         Rectangle().fill(AppColors.cinemaSurface)
                     }
                 }
-                .frame(height: 250)
+                .frame(height: 280)
                 .clipped()
             }
             
-            // Gradient Overlay
+            // Dramatic Vertical Vignette
             LinearGradient(
-                gradient: Gradient(colors: [Color.clear, Color.black.opacity(0.7), Color.black]),
+                gradient: Gradient(colors: [Color.clear, Color.black.opacity(0.4), Color.black.opacity(0.85), Color.black]),
                 startPoint: .top,
                 endPoint: .bottom
             )
             
-            // Banner Content
+            // Hero Info & Actions
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 6) {
                     if let rating = item.rating, !rating.isEmpty {
@@ -218,14 +250,10 @@ struct HomeScreen: View {
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
                     
-                    if let quality = item.quality, !quality.isEmpty {
-                        Text(quality)
-                            .font(AppFont.cairo(size: 10, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(AppColors.bronzeGoldDark)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    if let year = item.year, !year.isEmpty {
+                        Text(year)
+                            .font(AppFont.cairo(size: 11, weight: .bold))
+                            .foregroundColor(AppColors.textSecondary)
                     }
                 }
                 
@@ -234,25 +262,43 @@ struct HomeScreen: View {
                     .foregroundColor(.white)
                     .lineLimit(1)
                 
-                Button(action: {
-                    onSelectMedia(item)
-                }) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "play.fill")
-                            .font(.system(size: 14))
-                        Text("مشاهدة الآن")
-                            .font(AppFont.cairo(size: 13, weight: .bold))
+                HStack(spacing: 10) {
+                    Button(action: {
+                        onSelectMedia(item)
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 14))
+                            Text("مشاهدة الآن")
+                                .font(AppFont.cairo(size: 13, weight: .bold))
+                        }
+                        .foregroundColor(AppColors.cinemaBlack)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .background(AppColors.bronzeGold)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    .foregroundColor(AppColors.cinemaBlack)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 8)
-                    .background(AppColors.bronzeGold)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    
+                    Button(action: {
+                        onSelectMedia(item)
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "info.circle")
+                                .font(.system(size: 14))
+                            Text("تفاصيل")
+                                .font(AppFont.cairo(size: 13, weight: .medium))
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(AppColors.cinemaSurfaceElevated)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
                 }
             }
             .padding(16)
         }
-        .frame(height: 250)
+        .frame(height: 280)
     }
     
     // MARK: - Section Header
@@ -313,13 +359,32 @@ struct HomeScreen: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .padding(.horizontal, 16)
             
-            // Search Results or Explore Grid
+            // Genre Filter Pills (Exact Android Style)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(genres, id: \.self) { genre in
+                        let isSelected = selectedExploreGenre == genre
+                        Button(action: { selectedExploreGenre = genre }) {
+                            Text(genre)
+                                .font(AppFont.cairo(size: 12, weight: isSelected ? .bold : .medium))
+                                .foregroundColor(isSelected ? AppColors.cinemaBlack : .white)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 6)
+                                .background(isSelected ? AppColors.bronzeGold : AppColors.cinemaSurfaceElevated)
+                                .clipShape(Capsule())
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+            
+            // Search Results or All Items Grid
             let itemsToDisplay = !homeViewModel.searchQuery.isEmpty ? homeViewModel.searchResults : homeViewModel.moviesItems
             
             ScrollView(.vertical, showsIndicators: false) {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 16) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 14) {
                     ForEach(itemsToDisplay) { item in
-                        MediaCard(item: item, width: (UIScreen.main.bounds.width - 44) / 2, height: 230) {
+                        MediaCard(item: item, width: (UIScreen.main.bounds.width - 48) / 3, height: 165) {
                             onSelectMedia(item)
                         }
                     }
@@ -350,9 +415,9 @@ struct HomeScreen: View {
                 .frame(maxWidth: .infinity)
             } else {
                 ScrollView(.vertical, showsIndicators: false) {
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 16) {
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 14) {
                         ForEach(homeViewModel.favorites) { item in
-                            MediaCard(item: item, width: (UIScreen.main.bounds.width - 44) / 2, height: 230) {
+                            MediaCard(item: item, width: (UIScreen.main.bounds.width - 48) / 3, height: 165) {
                                 onSelectMedia(item)
                             }
                         }
@@ -377,7 +442,7 @@ struct HomeScreen: View {
                                 ChannelCard(channel: channel) {
                                     onSelectChannel(channel)
                                 }
-                                .frame(width: 110)
+                                .frame(width: 105)
                             }
                         }
                         .padding(.horizontal, 16)

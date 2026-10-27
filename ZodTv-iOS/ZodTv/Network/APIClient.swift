@@ -51,7 +51,9 @@ class APIClient {
         }
         
         if let queryItems = queryItems {
-            components.queryItems = queryItems
+            var items = components.queryItems ?? []
+            items.append(contentsOf: queryItems)
+            components.queryItems = items
         }
         
         guard let url = components.url else {
