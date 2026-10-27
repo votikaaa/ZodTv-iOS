@@ -33,6 +33,7 @@ struct HomeFeedData: Codable {
     let latest: [MediaItem]?
     let turkishSeries: [MediaItem]?
     let arabicSeries: [MediaItem]?
+    let foreignSeries: [MediaItem]?
     let foreignMovies: [MediaItem]?
     let arabicMovies: [MediaItem]?
     let animationMovies: [MediaItem]?
@@ -42,6 +43,7 @@ struct HomeFeedData: Codable {
         case slider, latest
         case turkishSeries = "turkish_series"
         case arabicSeries = "arabic_series"
+        case foreignSeries = "foreign_series"
         case foreignMovies = "foreign_movies"
         case arabicMovies = "arabic_movies"
         case animationMovies = "animation_movies"
@@ -88,6 +90,46 @@ struct MediaItem: Codable, Identifiable, Hashable {
         case parentTitle
         case seasonNumber
         case episodeNumber
+    }
+
+    init(
+        title: String,
+        url: String? = nil,
+        itemId: String? = nil,
+        image: String? = nil,
+        imageFull: String? = nil,
+        backdropUrl: String? = nil,
+        rating: String? = nil,
+        quality: String? = nil,
+        year: String? = nil,
+        tags: [String]? = nil,
+        type: String? = nil,
+        episodeCount: String? = nil,
+        parentUrl: String? = nil,
+        lastPosition: Int64? = nil,
+        totalDuration: Int64? = nil,
+        parentTitle: String? = nil,
+        seasonNumber: Int? = nil,
+        episodeNumber: Int? = nil
+    ) {
+        self.title = title
+        self.url = url
+        self.itemId = itemId
+        self.image = image
+        self.imageFull = imageFull
+        self.backdropUrl = backdropUrl
+        self.rating = rating
+        self.quality = quality
+        self.year = year
+        self.tags = tags
+        self.type = type
+        self.episodeCount = episodeCount
+        self.parentUrl = parentUrl
+        self.lastPosition = lastPosition
+        self.totalDuration = totalDuration
+        self.parentTitle = parentTitle
+        self.seasonNumber = seasonNumber
+        self.episodeNumber = episodeNumber
     }
 
     init(from decoder: Decoder) throws {
@@ -137,6 +179,28 @@ struct MediaItem: Codable, Identifiable, Hashable {
         self.parentTitle = try? container.decode(String.self, forKey: .parentTitle)
         self.seasonNumber = try? container.decode(Int.self, forKey: .seasonNumber)
         self.episodeNumber = try? container.decode(Int.self, forKey: .episodeNumber)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(title, forKey: .title)
+        try container.encodeIfPresent(url, forKey: .url)
+        try container.encodeIfPresent(itemId, forKey: .itemId)
+        try container.encodeIfPresent(image, forKey: .image)
+        try container.encodeIfPresent(imageFull, forKey: .imageFull)
+        try container.encodeIfPresent(backdropUrl, forKey: .backdropUrl)
+        try container.encodeIfPresent(rating, forKey: .rating)
+        try container.encodeIfPresent(quality, forKey: .quality)
+        try container.encodeIfPresent(year, forKey: .year)
+        try container.encodeIfPresent(tags, forKey: .tags)
+        try container.encodeIfPresent(type, forKey: .type)
+        try container.encodeIfPresent(episodeCount, forKey: .episodeCount)
+        try container.encodeIfPresent(parentUrl, forKey: .parentUrl)
+        try container.encodeIfPresent(lastPosition, forKey: .lastPosition)
+        try container.encodeIfPresent(totalDuration, forKey: .totalDuration)
+        try container.encodeIfPresent(parentTitle, forKey: .parentTitle)
+        try container.encodeIfPresent(seasonNumber, forKey: .seasonNumber)
+        try container.encodeIfPresent(episodeNumber, forKey: .episodeNumber)
     }
 
     var displayImage: String {
